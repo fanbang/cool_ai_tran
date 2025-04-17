@@ -614,81 +614,6 @@
 					widgetTheme: "light"
 				}, e.yt = e.yt || {}, t.targetLang, t.translateStatusHandler, t.modalRenderId)
 			},
-			localAiTranslator: async t => {
-				const e = atfp_global_object.languageObject[t.targetLang],
-					a = atfp_global_object.languageObject[t.sourceLang],
-					n = (0, l.select)("block-atfp/translate").getAllowedMetaFields(),
-					{
-						translateStatusHandler: r,
-						translateStatus: o
-					} = t;
-				let s = 0;
-				const c = await b.Object({
-					mainWrapperSelector: "#atfp_strings_model",
-					btnSelector: `#${t.ID}`,
-					btnClass: "local_ai_translator_btn",
-					btnText: (0, i.__)("Translate To", "automatic-translations-for-polylang") + " " + e + " (Beta)",
-					stringSelector: ".atfp_string_container tbody tr td.translate:not([data-translate-status='translated'])",
-					progressBarSelector: "#atfp_strings_model .atfp_translate_progress",
-					sourceLanguage: t.sourceLang,
-					targetLanguage: t.targetLang,
-					targetLanguageLabel: e,
-					sourceLanguageLabel: a,
-					onStartTranslationProcess: () => {
-						s = (new Date).getTime(), jQuery("#atfp_strings_model .modal-content .atfp_string_container")[0].scrollHeight > 100 && jQuery("#atfp_strings_model .atfp_translate_progress").fadeIn("slow")
-					},
-					onComplete: () => {
-						g({
-							prefix: "localAiTranslator",
-							start: s,
-							end: (new Date).getTime(),
-							translateStatus: !0
-						}), setTimeout((() => {
-							r(), jQuery("#atfp_strings_model .atfp_translate_progress").fadeOut("slow")
-						}), 4e3)
-					},
-					onBeforeTranslate: t => {
-						const e = jQuery("#atfp_strings_model .modal-content .atfp_string_container");
-						if (e.length < 1) return c.stopTranslation(), g({
-							prefix: "localAiTranslator",
-							start: s,
-							end: (new Date).getTime()
-						}), void(s = 0);
-						const a = e[0].getBoundingClientRect(),
-							n = t.closest("tr").offsetTop,
-							r = e.height();
-						var o;
-						n > r + a.y && (o = n - r + t.offsetHeight, e.scrollTop(o))
-					},
-					onAfterTranslate: t => {
-						const e = t.innerText,
-							a = t.dataset.stringType,
-							r = t.dataset.key,
-							o = t.closest("tr").querySelector('td[data-source="source_text"]').innerText;
-						u({
-							type: a,
-							key: r,
-							translateContent: e,
-							source: o,
-							provider: "localAiTranslator",
-							AllowedMetaFields: n
-						});
-						const s = (0, l.select)("block-atfp/translate").getTranslationInfo().translateData?.localAiTranslator,
-							i = s && s.targetWordCount ? s.targetWordCount : 0,
-							c = s && s.targetCharacterCount ? s.targetCharacterCount : 0;
-						"" !== e.trim() && e.trim().length > 0 && (0, l.dispatch)("block-atfp/translate").translationInfo({
-							targetWordCount: i + o.trim().split(/\s+/).filter((t => /[^\p{L}\p{N}]/.test(t))).length,
-							targetCharacterCount: c + o.trim().length,
-							provider: "localAiTranslator"
-						})
-					}
-				});
-				if (c.hasOwnProperty("init")) {
-					c.init();
-					const t = document.querySelector("#atfp_localAiTranslator_translate_element .local_ai_translator_btn");
-					t && o && (t.disabled = o)
-				}
-			}
 		},
 		w = d.createContext({});
 
@@ -1128,21 +1053,7 @@
 					className: "atfp-error-message"
 				}, (0, i.__)("language is not supported by Yandex Translate", "automatic-translations-for-polylang")),
 				ButtonAction: o
-			}, {
-				Service: "localAiTranslator",
-				ServiceLabel: "Chrome Built-in API",
-				Title: (0, i.__)("Translate Using Chrome Built-in API", "automatic-translations-for-polylang"),
-				Logo: `${e}chrome-built-in-ai-logo.png`,
-				ButtonText: (0, i.__)("Chrome AI Translator", "automatic-translations-for-polylang"),
-				ProviderLink: "https://developer.chrome.com/docs/ai/translator-api",
-				ButtonDisabled: s,
-				ErrorMessage: s ? React.createElement("button", {
-					className: "atfp-localai-disabled-message",
-					onClick: () => l("localAiTranslator")
-				}, (0, i.__)("Translator button is disabled. Click for details.", "automatic-translations-for-polylang")) : React.createElement(React.Fragment, null),
-				BetaEnabled: !0,
-				ButtonAction: o
-			}];
+			} ];
 			return React.createElement("div", {
 				className: "atfp-setting-modal-body"
 			}, React.createElement("div", {
